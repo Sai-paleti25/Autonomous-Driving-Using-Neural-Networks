@@ -1,10 +1,3 @@
-## ---------------------------- ##
-##
-## Example student submission code for autonomous driving challenge.
-## You must modify the train and predict methods and the NeuralNetwork class. 
-## 
-## ---------------------------- ##
-
 import numpy as np
 import cv2
 from tqdm import tqdm
@@ -14,8 +7,7 @@ def alv_vision(image, rgb, thresh):
     return (np.dot(image.reshape(-1, 3), rgb) > thresh).reshape(image.shape[0], image.shape[1])
 
 def train(path_to_images, csv_file):
-    '''
-    First method you need to complete. 
+    ''' 
     Args: 
     path_to_images = path to jpg image files
     csv_file = path and filename to csv file containing frame numbers and steering angles. 
@@ -33,8 +25,7 @@ def train(path_to_images, csv_file):
     NN = NeuralNetwork()
     bins=NN.bins
     
-    # You could import your images one at a time or all at once first, 
-    # here's some code to import a single image:
+    # could import your images one at a time or all at once first, 
     for i in range(1500):
         image = cv2.imread(path_to_images + '/' + str(int(i)).zfill(4) + '.jpg')
         res = cv2.resize(image, dsize=(64, 60), interpolation=cv2.INTER_AREA)
@@ -59,8 +50,6 @@ def train(path_to_images, csv_file):
     
         except IndexError:
             trash=0
-        print(trail)
-        print("the values of trail are",trail)
         bins_values.append(trail)
     data = np.asanyarray(train)
     y_data = np.asanyarray(bins_values)
@@ -76,8 +65,6 @@ def train(path_to_images, csv_file):
             params = NN.getParams()
             #dJdW1,dJdW2 = NN.costFunctionPrime(X,y)
             grads = NN.computeGradients(X,y)
-            #NN.W1 = NN.W1 - 0.0001 * dJdW1
-            #NN.W2 = NN.W2 - 0.0001 * dJdW2
             set_params = params - 0.4*grads
             NN.setParams(set_params)
     return NN
@@ -85,7 +72,6 @@ def train(path_to_images, csv_file):
 
 def predict(NN, image_file):
     '''
-    Second method you need to complete. 
     Given an image filename, load image, make and return predicted steering angle in degrees. 
     '''
     im_full = cv2.imread(image_file)
@@ -94,8 +80,6 @@ def predict(NN, image_file):
     before_X= np.array(final_X).flatten()/255.0
     bins = NN.bins
     final_bins = np.array(bins)
-    #print(final_bins)
-    #print(final_bins.shape)
     X= before_X.reshape(1,before_X.shape[0])
     angle = NN.forward(X)
     angle= angle.reshape(60)
@@ -106,10 +90,8 @@ def predict(NN, image_file):
     return predicted_angle
 
 class NeuralNetwork(object):
-    def __init__(self):        
-        '''
-        Neural Network Class, you may need to make some modifications here!
-        '''
+    def __init__(self):
+        
         self.inputLayerSize = 3840
         self.outputLayerSize = 60
         self.hiddenLayerSize = 10
@@ -143,7 +125,7 @@ class NeuralNetwork(object):
         return J
         
     def costFunctionPrime(self, X, y):
-        #Compute derivative with respect to W and W2 for a given X and y:
+        #Compute derivative with respect to W1 and W2 for a given X and y:
         self.yHat = self.forward(X)
         
         delta3 = np.multiply(-(y-self.yHat), self.sigmoidPrime(self.z3))

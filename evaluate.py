@@ -7,25 +7,19 @@ import signal
 def timeout_handler(num, stack):
     raise Exception("TIMEOUT")
 
-def evaluate(student_file = 'sample_student', 
+def evaluate(student_file = 'train_network', 
              path_to_training_images = 'data/training/images',
              training_csv_file = 'data/training/steering_angles.csv', 
              path_to_testing_images = 'data/training/images',
              testing_csv_file = 'data/training/steering_angles.csv', 
              time_limit = 600):
     
-    '''
-    Evaluate Student Submission for autonomous driving challenge. 
-    Train and test studen't neural network implementation. 
-    Training time is limited to time_limit seconds, if your code takes 
-    longer than this, it will be terminated and no score will be recorded.
-    '''
     
     #Import student methods:
     train = getattr(__import__(student_file, 'train'), 'train')
     predict = getattr(__import__(student_file, 'predict'), 'predict')
     
-    #Setup timout handler - I think this will only work on unix based systems:
+    #Setup timout handler - this will only work on unix based systems:
     signal.signal(signal.SIGALRM, timeout_handler)
     signal.alarm(time_limit)
     
@@ -78,7 +72,7 @@ def calculate_score(RMSE):
 
 if __name__ == '__main__':
     program_start = time.time()
-    RMSE = evaluate(student_file='sample_student', 
+    RMSE = evaluate(student_file='train_network', 
                     path_to_training_images = 'data/training/images',
                     training_csv_file = 'data/training/steering_angles.csv', 
                     path_to_testing_images = 'data/training/images',
